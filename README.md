@@ -1,0 +1,1 @@
+# Trabalho_SoftwareB-sico_2026.1
