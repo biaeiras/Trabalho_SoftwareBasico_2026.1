@@ -1,0 +1,19 @@
+Caso de Teste 1 : 
+
+- Receber um parâmetro, sem  alterar nada, chamar a função original e retornar 
+
+Caso de Teste 2: 
+
+- Colocar o parâmetro FIX para inteiro 
+
+Caso de Teste 3: 
+
+- Colocar o parâmetro FIX para ponteiro
+
+
+Caso de Teste 4: 
+- Colocar o parâmetro IND 
+
+Caso de Teste 5: 
+
+- Colocar o parâmetro PARAM 

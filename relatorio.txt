@@ -1,0 +1,42 @@
+Foi criado o arquivo cria_func.c, cria_func.h e teste.c, no TDD primeiro foi testado a funçãocira_func vazia e a chamada passado smente um argumento , sendo este fixo, que resultou em Sefmentation fault
+
+@biaeiras ➜ /workspaces/Trabalho_SoftwareBasico_2026.1 (main) $ objdump -d vendo_objDump.o
+
+vendo_objDump.o:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000000000 <minha_instrucao>:
+   0:   55                      push   %rbp
+   1:   48 89 e5                mov    %rsp,%rbp
+
+vendo o fim: 
+
+0:   48 b8 88 77 66 55 44    movabs $0x1122334455667788,%rax
+   7:   33 22 11 
+   a:   ff d0                   call   *%rax
+   c:   c9                      leave
+   d:   c3                      ret
+
+Ajustando o alinhamento da pilha e colocando o endreço original em %rax e dando o call, e leave e ret ao rodar novamente o cria_func.c com o teste.c o código não deu Segmentation fault e passando um argumento do Tipo PARAM ( só repassar) foi retornando corretamente o valor passado. 
+
+$ ./teste
+Esperado: 42 | Obtido: 42 
+
+Assim , teste 1 foi realizado com sucesso:
+
+Caso de Teste 1 : 
+
+- Receber um parâmetro, sem  alterar nada, chamar a função original e retornar 
+
+
+Teste 2: Colocando FIX passando um inteiro passou com sucesso:
+
+ ./teste
+Esperado: 42 | Obtido: 42
+Teste 2 PASSOU com sucesso!
+
+Teste 3: Colocando FIX passando um ponteiro para char passou com sucesso:
+Esperado: teste ponteiro fixo | Obtido: teste ponteiro fixo
+Teste 3 PASSOU com sucesso!
