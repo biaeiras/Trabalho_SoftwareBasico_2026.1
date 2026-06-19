@@ -221,15 +221,15 @@ void cria_func (void* f, DescParam params[], int n, unsigned char codigo[]){
             
     }
 
-
-
-
-    //    movabsq $0x1122334455667788, %rax
-    // call *%rax
-    // leave
-    // ret
+    /*  0:   48 b8 88 77 66 55 44    movabs $0x1122334455667788,%rax
+        7:   33 22 11 
+        a:   ff d0                   call   *%rax
+        c:   c9                      leave
+        d:   c3                      ret
+    
+    */
     //chamada da função original 
-    //movendo o valor do endereço da função para rax 
+    //movendo o valor do endereço da função para %rax 
     codigo[indice++] = 0x48;
     codigo[indice++] = 0xb8;
 
