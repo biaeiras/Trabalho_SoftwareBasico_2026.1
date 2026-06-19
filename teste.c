@@ -166,7 +166,96 @@ int main(void) {
         printf("Teste 5 PASSOU!\n\n");
     }
 
-    printf("Todos os testes passaram!\n");
 
+
+
+    printf("==== TESTE 6: PARAM ponteiro ====\n");
+{
+    DescParam params[1];
+    typedef char *(*func_ptr_ptr)(char *);
+    func_ptr_ptr f;
+
+    char *msg = "teste parametro ponteiro";
+
+    params[0].tipo_val = PTR_PAR;
+    params[0].orig_val = PARAM;
+
+    cria_func(func_identidade_ptr, params, 1, codigo);
+    f = (func_ptr_ptr) codigo;
+
+    char *resultado = f(msg);
+
+    printf("Esperado: %s | Obtido: %s\n", msg, resultado);
+    assert(strcmp(resultado, msg) == 0);
+
+    printf("Teste 6 PASSOU!\n\n");
+}
+printf("==== TESTE 7: IND ponteiro ====\n");
+{
+    DescParam params[1];
+    typedef char *(*func_ptr_void)(void);
+    func_ptr_void f;
+
+    char *msg = "ponteiro indireto 1";
+
+    params[0].tipo_val = PTR_PAR;
+    params[0].orig_val = IND;
+    params[0].valor.v_ptr = &msg;
+
+    cria_func(func_identidade_ptr, params, 1, codigo);
+    f = (func_ptr_void) codigo;
+
+    char *resultado = f();
+
+    printf("Esperado: %s | Obtido: %s\n", msg, resultado);
+    assert(strcmp(resultado, msg) == 0);
+
+    msg = "ponteiro indireto 2";
+    resultado = f();
+
+    printf("Depois de mudar msg:\n");
+    printf("Esperado: %s | Obtido: %s\n", msg, resultado);
+    assert(strcmp(resultado, msg) == 0);
+
+    printf("Teste 7 PASSOU!\n\n");
+}
+printf("==== TESTE 8: memcmp com FIX ptr, PARAM ptr, PARAM int ====\n");
+{
+    DescParam params[3];
+    typedef int (*func_memcmp)(void *, int);
+    func_memcmp f;
+
+    char fixa[] = "abcdef";
+    char candidata1[] = "abcxyz";
+    char candidata2[] = "abzxyz";
+
+    params[0].tipo_val = PTR_PAR;
+    params[0].orig_val = FIX;
+    params[0].valor.v_ptr = fixa;
+
+    params[1].tipo_val = PTR_PAR;
+    params[1].orig_val = PARAM;
+
+    params[2].tipo_val = INT_PAR;
+    params[2].orig_val = PARAM;
+
+    cria_func(memcmp, params, 3, codigo);
+    f = (func_memcmp) codigo;
+
+    int resultado1 = f(candidata1, 3);
+    int resultado2 = f(candidata2, 3);
+
+    printf("Comparando prefixo de tamanho 3 com candidata1\n");
+    printf("Esperado: 0 | Obtido: %d\n", resultado1);
+    assert(resultado1 == 0);
+
+    printf("Comparando prefixo de tamanho 3 com candidata2\n");
+    printf("Esperado: diferente de 0 | Obtido: %d\n", resultado2);
+    assert(resultado2 != 0);
+
+    printf("Teste 8 PASSOU!\n\n");
+}
+    printf("Todos os testes passaram!\n");
     return 0;
 }
+

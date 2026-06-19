@@ -1,3 +1,6 @@
+/* Bianca do Nascimento Eiras 2320351 3WB */
+/* Danilo de Castro Alves Nascimento 2320401 3WB */
+
 #include "cria_func.h"
 
 void cria_func (void* f, DescParam params[], int n, unsigned char codigo[]){
@@ -138,6 +141,31 @@ void cria_func (void* f, DescParam params[], int n, unsigned char codigo[]){
                 codigo[indice++] = mov_int[i][param_recebido][2];
             }
 
+            
+            if(params[i].tipo_val == PTR_PAR) {
+
+                unsigned char mov_ptr[3][3][3] = {
+                    {
+                        {0x4c, 0x89, 0xc7}, /* mov %r8,  %rdi */
+                        {0x4c, 0x89, 0xcf}, /* mov %r9,  %rdi */
+                        {0x4c, 0x89, 0xd7}  /* mov %r10, %rdi */
+                    },
+                    {
+                        {0x4c, 0x89, 0xc6}, /* mov %r8,  %rsi */
+                        {0x4c, 0x89, 0xce}, /* mov %r9,  %rsi */
+                        {0x4c, 0x89, 0xd6}  /* mov %r10, %rsi */
+                    },
+                    {
+                        {0x4c, 0x89, 0xc2}, /* mov %r8,  %rdx */
+                        {0x4c, 0x89, 0xca}, /* mov %r9,  %rdx */
+                        {0x4c, 0x89, 0xd2}  /* mov %r10, %rdx */
+                    }
+                };
+
+                codigo[indice++] = mov_ptr[i][param_recebido][0];
+                codigo[indice++] = mov_ptr[i][param_recebido][1];
+                codigo[indice++] = mov_ptr[i][param_recebido][2];
+            }
             param_recebido++;
         }
         if(params[i].orig_val == IND) {
@@ -167,6 +195,26 @@ void cria_func (void* f, DescParam params[], int n, unsigned char codigo[]){
                 if(i == 2) {
                     codigo[indice++] = 0x8b;
                     codigo[indice++] = 0x10;  /* mov (%rax), %edx */
+                }
+            }
+            if(params[i].tipo_val == PTR_PAR) {
+
+                if(i == 0) {
+                    codigo[indice++] = 0x48;
+                    codigo[indice++] = 0x8b;
+                    codigo[indice++] = 0x38;  /* mov (%rax), %rdi */
+                }
+
+                if(i == 1) {
+                    codigo[indice++] = 0x48;
+                    codigo[indice++] = 0x8b;
+                    codigo[indice++] = 0x30;  /* mov (%rax), %rsi */
+                }
+
+                if(i == 2) {
+                    codigo[indice++] = 0x48;
+                    codigo[indice++] = 0x8b;
+                    codigo[indice++] = 0x10;  /* mov (%rax), %rdx */
                 }
             }
         }
