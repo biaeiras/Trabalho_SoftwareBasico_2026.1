@@ -1,3 +1,6 @@
+Bianca do Nascimento Eiras - 2320351 - 3WB
+Danilo de Castro Alves Nascimento - 2320401 - 3WB
+
 Foi criado o arquivo cria_func.c, cria_func.h e teste.c, no TDD primeiro foi testado a função cria_func vazia e a chamada passando somente um argumento , sendo este fixo, que resultou em Segmentation fault
 
 @biaeiras ➜ /workspaces/Trabalho_SoftwareBasico_2026.1 (main) $ objdump -d vendo_objDump.o
@@ -98,12 +101,62 @@ Teste 5 PASSOU!
 Esse teste também verificou que o valor é lido no momento da chamada da função gerada, pois depois de alterar x de 21 para 30, o retorno passou de 42 para 60.
 
 
-Até o momento, os testes implementados verificam:
+Teste 6: Foi testado PARAM com ponteiro. Nesse caso, a função gerada recebe um ponteiro para char e repassa esse ponteiro para a função original.
+
+A função original usada foi:
+
+char *func_identidade_ptr(char *x) {
+    return x;
+}
+
+O teste passou com sucesso:
+
+==== TESTE 6: PARAM ponteiro ====
+Esperado: teste parametro ponteiro | Obtido: teste parametro ponteiro
+Teste 6 PASSOU!
+
+
+Teste 7: Foi testado IND com ponteiro. Nesse caso, o parâmetro não é recebido diretamente pela função gerada, mas sim lido a partir do endereço de uma variável do tipo ponteiro.
+
+Foi criada uma variável msg apontando inicialmente para "ponteiro indireto 1", e o parâmetro foi configurado como IND apontando para o endereço de msg. Depois, msg foi alterada para "ponteiro indireto 2", para verificar se a função gerada lia o valor atual da variável.
+
+O teste passou com sucesso:
+
+==== TESTE 7: IND ponteiro ====
+Esperado: ponteiro indireto 1 | Obtido: ponteiro indireto 1
+Depois de mudar msg:
+Esperado: ponteiro indireto 2 | Obtido: ponteiro indireto 2
+Teste 7 PASSOU!
+
+
+Teste 8: Foi testado um caso com três parâmetros usando a função memcmp, semelhante ao exemplo do enunciado. A configuração usada foi:
+
+- params[0] = FIX com ponteiro
+- params[1] = PARAM com ponteiro
+- params[2] = PARAM com inteiro
+
+Esse teste verifica a combinação entre ponteiros, inteiros, parâmetros fixos e parâmetros recebidos pela função gerada.
+
+O teste passou com sucesso:
+
+==== TESTE 8: memcmp com FIX ptr, PARAM ptr, PARAM int ====
+Comparando prefixo de tamanho 3 com candidata1
+Esperado: 0 | Obtido: 0
+Comparando prefixo de tamanho 3 com candidata2
+Esperado: diferente de 0 | Obtido: -23
+Teste 8 PASSOU!
+
+
+Ao final, os testes implementados verificam:
+
 - PARAM com inteiro;
+- PARAM com ponteiro;
 - FIX com inteiro;
 - FIX com ponteiro;
+- IND com inteiro;
+- IND com ponteiro;
 - combinação de PARAM, FIX e PARAM;
-- IND com inteiro.
+- combinação com três parâmetros usando memcmp.
 
 Após os ajustes descritos acima, todos os testes executados passaram com sucesso:
 
@@ -129,5 +182,22 @@ Esperado: 42 | Obtido: 42
 Depois de mudar x:
 Esperado: 60 | Obtido: 60
 Teste 5 PASSOU!
+
+==== TESTE 6: PARAM ponteiro ====
+Esperado: teste parametro ponteiro | Obtido: teste parametro ponteiro
+Teste 6 PASSOU!
+
+==== TESTE 7: IND ponteiro ====
+Esperado: ponteiro indireto 1 | Obtido: ponteiro indireto 1
+Depois de mudar msg:
+Esperado: ponteiro indireto 2 | Obtido: ponteiro indireto 2
+Teste 7 PASSOU!
+
+==== TESTE 8: memcmp com FIX ptr, PARAM ptr, PARAM int ====
+Comparando prefixo de tamanho 3 com candidata1
+Esperado: 0 | Obtido: 0
+Comparando prefixo de tamanho 3 com candidata2
+Esperado: diferente de 0 | Obtido: -23
+Teste 8 PASSOU!
 
 Todos os testes passaram!
