@@ -1,4 +1,4 @@
-Foi criado o arquivo cria_func.c, cria_func.h e teste.c, no TDD primeiro foi testado a funçãocira_func vazia e a chamada passado smente um argumento , sendo este fixo, que resultou em Sefmentation fault
+Foi criado o arquivo cria_func.c, cria_func.h e teste.c, no TDD primeiro foi testado a função cria_func vazia e a chamada passando somente um argumento , sendo este fixo, que resultou em Segmentation fault
 
 @biaeiras ➜ /workspaces/Trabalho_SoftwareBasico_2026.1 (main) $ objdump -d vendo_objDump.o
 
@@ -19,7 +19,7 @@ vendo o fim:
    c:   c9                      leave
    d:   c3                      ret
 
-Ajustando o alinhamento da pilha e colocando o endreço original em %rax e dando o call, e leave e ret ao rodar novamente o cria_func.c com o teste.c o código não deu Segmentation fault e passando um argumento do Tipo PARAM ( só repassar) foi retornando corretamente o valor passado. 
+Ajustando o alinhamento da pilha e colocando o endereço original em %rax e dando o call, e leave e ret ao rodar novamente o cria_func.c com o teste.c o código não deu Segmentation fault e passando um argumento do Tipo PARAM ( só repassar) foi retornando corretamente o valor passado. 
 
 $ ./teste
 Esperado: 42 | Obtido: 42 
@@ -40,3 +40,94 @@ Teste 2 PASSOU com sucesso!
 Teste 3: Colocando FIX passando um ponteiro para char passou com sucesso:
 Esperado: teste ponteiro fixo | Obtido: teste ponteiro fixo
 Teste 3 PASSOU com sucesso!
+
+Teste 4: Foi testado um caso com três parâmetros, misturando PARAM, FIX e PARAM, para verificar se os argumentos recebidos pela função gerada estavam sendo colocados nos registradores corretos antes da chamada da função original.
+
+A função original usada foi:
+
+int soma3(int a, int b, int c) {
+    return a + b + c;
+}
+
+A configuração dos parâmetros foi:
+- params[0] = PARAM
+- params[1] = FIX com valor 10
+- params[2] = PARAM
+
+Nesse caso, a função gerada recebe dois argumentos e deve chamar a função original como soma3(3, 10, 7).
+
+Na primeira execução, o teste falhou:
+
+==== TESTE 4: PARAM, FIX, PARAM ====
+soma3 recebeu: a=3 b=10 c=31
+Esperado: 20 | Obtido: 44
+
+O erro ocorreu porque o segundo parâmetro recebido pela função gerada não estava sendo movido para o registrador correto da função original.
+
+Após ajustar o tratamento de PARAM, o teste passou:
+
+==== TESTE 4: PARAM, FIX, PARAM ====
+soma3 recebeu: a=3 b=10 c=7
+Esperado: 20 | Obtido: 20
+Teste 4 PASSOU!
+
+
+Teste 5: Foi testado o caso IND com inteiro. Nesse caso, o parâmetro não é recebido diretamente pela função gerada, mas sim lido a partir do endereço de uma variável.
+
+A função original usada foi:
+
+int multiplica_por_2(int x) {
+    return 2 * x;
+}
+
+Foi criada uma variável x com valor inicial 21, e o parâmetro foi configurado como IND apontando para o endereço de x.
+
+Na primeira execução, antes do tratamento de IND, o teste falhou:
+
+==== TESTE 5: IND int ====
+Esperado: 42 | Obtido: -378712442
+
+Depois foi implementado o carregamento do valor armazenado no endereço indicado por params[i].valor.v_ptr. Com isso, o teste passou:
+
+==== TESTE 5: IND int ====
+Esperado: 42 | Obtido: 42
+Depois de mudar x:
+Esperado: 60 | Obtido: 60
+Teste 5 PASSOU!
+
+Esse teste também verificou que o valor é lido no momento da chamada da função gerada, pois depois de alterar x de 21 para 30, o retorno passou de 42 para 60.
+
+
+Até o momento, os testes implementados verificam:
+- PARAM com inteiro;
+- FIX com inteiro;
+- FIX com ponteiro;
+- combinação de PARAM, FIX e PARAM;
+- IND com inteiro.
+
+Após os ajustes descritos acima, todos os testes executados passaram com sucesso:
+
+==== TESTE 1: PARAM int ====
+Esperado: 42 | Obtido: 42
+Teste 1 PASSOU!
+
+==== TESTE 2: FIX int ====
+Esperado: 42 | Obtido: 42
+Teste 2 PASSOU!
+
+==== TESTE 3: FIX ponteiro ====
+Esperado: teste ponteiro fixo | Obtido: teste ponteiro fixo
+Teste 3 PASSOU!
+
+==== TESTE 4: PARAM, FIX, PARAM ====
+soma3 recebeu: a=3 b=10 c=7
+Esperado: 20 | Obtido: 20
+Teste 4 PASSOU!
+
+==== TESTE 5: IND int ====
+Esperado: 42 | Obtido: 42
+Depois de mudar x:
+Esperado: 60 | Obtido: 60
+Teste 5 PASSOU!
+
+Todos os testes passaram!

@@ -42,7 +42,7 @@ void cria_func (void* f, DescParam params[], int n, unsigned char codigo[]){
 
 
     //Verificar os parâmetros fix e colocar no espaço certo 
-    
+    int param_recebido = 0;
     for(int  i = 0; i < n; i++){
         if(params[i].orig_val == FIX){
 
@@ -109,6 +109,65 @@ void cria_func (void* f, DescParam params[], int n, unsigned char codigo[]){
 
                 *(void**)&codigo[indice] = params[i].valor.v_ptr; 
                 indice += 8; 
+            }
+        }
+        if(params[i].orig_val == PARAM) {
+
+            if(params[i].tipo_val == INT_PAR) {
+
+                unsigned char mov_int[3][3][3] = {
+                    {
+                        {0x44, 0x89, 0xc7}, /* mov %r8d,  %edi */
+                        {0x44, 0x89, 0xcf}, /* mov %r9d,  %edi */
+                        {0x44, 0x89, 0xd7}  /* mov %r10d, %edi */
+                    },
+                    {
+                        {0x44, 0x89, 0xc6}, /* mov %r8d,  %esi */
+                        {0x44, 0x89, 0xce}, /* mov %r9d,  %esi */
+                        {0x44, 0x89, 0xd6}  /* mov %r10d, %esi */
+                    },
+                    {
+                        {0x44, 0x89, 0xc2}, /* mov %r8d,  %edx */
+                        {0x44, 0x89, 0xca}, /* mov %r9d,  %edx */
+                        {0x44, 0x89, 0xd2}  /* mov %r10d, %edx */
+                    }
+                };
+
+                codigo[indice++] = mov_int[i][param_recebido][0];
+                codigo[indice++] = mov_int[i][param_recebido][1];
+                codigo[indice++] = mov_int[i][param_recebido][2];
+            }
+
+            param_recebido++;
+        }
+        if(params[i].orig_val == IND) {
+
+            /*
+            Coloca em %rax o endereço da variável amarrada.
+            Exemplo: se valor.v_ptr = &x, então %rax = &x.
+            */
+            codigo[indice++] = 0x48;
+            codigo[indice++] = 0xb8;
+
+            *(void**)&codigo[indice] = params[i].valor.v_ptr;
+            indice += 8;
+
+            if(params[i].tipo_val == INT_PAR) {
+
+                if(i == 0) {
+                    codigo[indice++] = 0x8b;
+                    codigo[indice++] = 0x38;  /* mov (%rax), %edi */
+                }
+
+                if(i == 1) {
+                    codigo[indice++] = 0x8b;
+                    codigo[indice++] = 0x30;  /* mov (%rax), %esi */
+                }
+
+                if(i == 2) {
+                    codigo[indice++] = 0x8b;
+                    codigo[indice++] = 0x10;  /* mov (%rax), %edx */
+                }
             }
         }
             
